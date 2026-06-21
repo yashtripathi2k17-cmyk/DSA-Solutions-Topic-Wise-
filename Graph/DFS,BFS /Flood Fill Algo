@@ -1,0 +1,315 @@
+# Flood Fill (DFS) - Easy Notes
+
+## Problem
+
+Given a starting cell `(sr, sc)` in a matrix, change its color and all connected cells having the same color to `newColor`.
+
+### Example
+
+Input:
+
+```cpp
+image = {
+    {1,1,1},
+    {1,1,0},
+    {1,0,1}
+};
+
+sr = 1;
+sc = 1;
+newColor = 2;
+```
+
+Output:
+
+```cpp
+{
+    {2,2,2},
+    {2,2,0},
+    {2,0,1}
+}
+```
+
+---
+
+# Intuition
+
+Think of it like the Paint Bucket tool in MS Paint.
+
+1. Start from the given cell.
+2. Color the current cell.
+3. Check its 4 neighbors:
+
+   * Up
+   * Down
+   * Left
+   * Right
+4. If a neighbor has the same original color, visit it.
+5. Repeat until no valid neighbor is left.
+
+---
+
+# Approach
+
+### Step 1
+
+Store the original color.
+
+```cpp
+int oldColor = image[sr][sc];
+```
+
+Why?
+
+Because we only want to spread through cells having this color.
+
+---
+
+### Step 2
+
+If oldColor and newColor are the same, return.
+
+```cpp
+if(oldColor == newColor)
+    return image;
+```
+
+Otherwise DFS may keep revisiting cells.
+
+---
+
+### Step 3
+
+Start DFS from `(sr, sc)`.
+
+```cpp
+dfs(sr, sc, image, oldColor, newColor);
+```
+
+---
+
+### Step 4
+
+Inside DFS:
+
+Color the current cell.
+
+```cpp
+image[row][col] = newColor;
+```
+
+---
+
+### Step 5
+
+Visit all 4 neighbors.
+
+```cpp
+Up
+Down
+Left
+Right
+```
+
+Using direction arrays:
+
+```cpp
+int dr[] = {-1, 1, 0, 0};
+int dc[] = {0, 0, -1, 1};
+```
+
+---
+
+### Step 6
+
+For every neighbor:
+
+Check:
+
+1. Inside matrix?
+2. Same old color?
+
+If yes:
+
+```cpp
+dfs(neighbor);
+```
+
+---
+
+# Dry Run
+
+Initial Matrix
+
+```text
+1 1 1
+1 1 0
+1 0 1
+```
+
+Start at `(1,1)`.
+
+Paint current cell.
+
+```text
+1 1 1
+1 2 0
+1 0 1
+```
+
+Visit Up `(0,1)`.
+
+```text
+1 2 1
+1 2 0
+1 0 1
+```
+
+Visit Left `(0,0)`.
+
+```text
+2 2 1
+1 2 0
+1 0 1
+```
+
+Visit Right `(0,2)`.
+
+```text
+2 2 2
+1 2 0
+1 0 1
+```
+
+Visit Down `(1,0)`.
+
+```text
+2 2 2
+2 2 0
+1 0 1
+```
+
+Visit Down `(2,0)`.
+
+```text
+2 2 2
+2 2 0
+2 0 1
+```
+
+Final Answer:
+
+```text
+2 2 2
+2 2 0
+2 0 1
+```
+
+---
+
+# Code with Comments
+
+```cpp
+class Solution {
+public:
+
+    // DFS function
+    void dfs(int row, int col,
+             vector<vector<int>>& image,
+             int oldColor,
+             int newColor)
+    {
+        int n = image.size();
+        int m = image[0].size();
+
+        // Mark current cell as visited by changing its color
+        image[row][col] = newColor;
+
+        // Up, Down, Left, Right
+        int dr[] = {-1, 1, 0, 0};
+        int dc[] = {0, 0, -1, 1};
+
+        // Check all 4 directions
+        for(int i = 0; i < 4; i++)
+        {
+            int nr = row + dr[i];
+            int nc = col + dc[i];
+
+            // Skip if outside matrix
+            if(nr < 0 || nr >= n || nc < 0 || nc >= m)
+                continue;
+
+            // Skip if color is different
+            if(image[nr][nc] != oldColor)
+                continue;
+
+            // Visit neighbor
+            dfs(nr, nc, image, oldColor, newColor);
+        }
+    }
+
+    vector<vector<int>> floodFill(vector<vector<int>>& image,
+                                  int sr,
+                                  int sc,
+                                  int newColor)
+    {
+        // Store original color
+        int oldColor = image[sr][sc];
+
+        // No work needed
+        if(oldColor == newColor)
+            return image;
+
+        // Start DFS
+        dfs(sr, sc, image, oldColor, newColor);
+
+        return image;
+    }
+};
+```
+
+---
+
+# Why No Visited Array?
+
+Normally DFS uses:
+
+```cpp
+visited[n][m]
+```
+
+But here:
+
+```cpp
+image[row][col] = newColor;
+```
+
+already marks the cell as visited.
+
+So a separate visited array is not required.
+
+---
+
+# Complexity
+
+### Time
+
+```cpp
+O(N * M)
+```
+
+Every cell is visited at most once.
+
+### Space
+
+```cpp
+O(N * M)
+```
+
+Worst-case recursion stack.
+
+---
+
+# Interview One-Liner
+
+Flood Fill is a DFS/BFS traversal where we start from a source cell and replace all connected cells having the same original color with a new color.
