@@ -1,0 +1,71 @@
+1----Brute Force code 
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        int n = s.length();
+        int maxLength = 0;
+
+        for (int i = 0; i < n; i++) {
+
+            vector<int> freq(26, 0);
+            int maxFreq = 0;
+
+            for (int j = i; j < n; j++) {
+
+                freq[s[j] - 'A']++;
+
+                maxFreq = max(maxFreq, freq[s[j] - 'A']);
+
+                int windowSize = j - i + 1;
+
+                if (windowSize - maxFreq <= k) {
+                    maxLength = max(maxLength, windowSize);
+                }
+            }
+        }
+
+        return maxLength;
+    }
+};
+2-----Optimsed
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+
+        int l = 0;
+        int maxLength = 0;
+        vector<int> freq(26, 0);
+        int maxFreq = 0;
+
+        for (int r = 0; r < s.length(); r++) {
+
+            freq[s[r] - 'A']++;
+
+            maxFreq = max(maxFreq, freq[s[r] - 'A']);
+
+            while ((r - l + 1) - maxFreq > k) {
+                freq[s[l] - 'A']--;
+                l++;
+            }
+
+            maxLength = max(maxLength, r - l + 1);
+        }
+
+        return maxLength;
+    }
+
+};
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+"I use the Sliding Window approach. The idea is to maintain the longest valid window. I 
+expand the window using the right pointer and keep the frequency of each character inside the window. I also keep track of
+the character with the highest frequency. The number of replacements needed is window size - maximum frequency because I keep the
+most frequent character and replace all the others. If the replacements needed become greater than k, I shrink the window by moving the 
+left pointer. Whenever the window is valid,
+
+"Why windowSize - maxFreq?"
+
+Answer:
+
+"Because the most frequent character is the one I keep. Every other character in the window must be replaced to make the entire window consist of the same character."
+I update the maximum length. Since both pointers move only forward, the time complexity is O(n) and the space complexity is O(1)."
