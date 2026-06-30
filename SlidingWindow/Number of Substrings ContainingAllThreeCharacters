@@ -1,0 +1,55 @@
+Number of Substrings Containing All Three Characters
+1-Brute force
+class Solution {
+public:
+    int numberOfSubstrings(string s) {
+
+        int n = s.length();
+        int count = 0;
+
+        for (int i = 0; i < n; i++) {
+
+            vector<int> freq(3, 0);
+
+            for (int j = i; j < n; j++) {
+
+                freq[s[j] - 'a']++;
+
+                if (freq[0] > 0 && freq[1] > 0 && freq[2] > 0) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+};
+2----Optimised code
+
+class Solution {
+public:
+    int numberOfSubstrings(string s) {
+        int n=s.length();
+        vector<int>freq(3,0);
+        int l=0;
+        int cnt=0;
+        for(int r=0;r<s.length();r++){
+            freq[s[r]-'a']++;
+            while(freq[0]>0&&freq[1]>0&&freq[2]>0){
+                 cnt+=n-r;
+                 freq[s[l]-'a']--;
+                 l++;
+            }
+        }
+        return cnt;
+    }
+};
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Step 2: Big Picture
+
+
+"I use the Sliding Window approach. I expand the window until it contains all three characters. 
+Once it becomes valid, I count all valid substrings starting from the current left pointer."
+I use a frequency array to store how many a, b, and c are inside the current window."
+"When all three frequencies are greater than zero, it means my current window contains a, b, and c, so it is valid."
+"I move the right pointer and add the current character to the window."
