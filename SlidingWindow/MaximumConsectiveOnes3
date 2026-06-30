@@ -1,0 +1,54 @@
+1----Brute Force Code (O(n²))
+class Solution {
+public:
+    int longestOnes(vector<int>& nums, int k) {
+        int n = nums.size();
+        int maxLength = 0;
+
+        for (int i = 0; i < n; i++) {
+
+            int zeroCount = 0;
+
+            for (int j = i; j < n; j++) {
+
+                if (nums[j] == 0)
+                    zeroCount++;
+
+                if (zeroCount <= k) {
+                    maxLength = max(maxLength, j - i + 1);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return maxLength;
+    }
+};
+2----Optimised
+class Solution {
+public:
+    int longestOnes(vector<int>& nums, int k) {
+      int n=nums.size();
+      int l=0;
+      int zerocnt=0;
+      int maxlength=INT_MIN;
+      for(int r=0;r<n;r++){
+         if(nums[r]==0){
+            zerocnt++;
+         }
+         while(zerocnt>k){
+            if(nums[l]==0){
+                zerocnt--;
+            }
+            l++;
+         }
+         maxlength=max(maxlength,r-l+1);
+      }
+      return maxlength;
+    }
+};
+"I use the Sliding Window technique with two pointers. The right pointer expands the window, a
+nd whenever I see a zero, I increase zeroCount. If the number of zeros becomes greater than k, 
+it means I cannot flip that many zeros, so I shrink the window by moving the left pointer. If the left element is zero, I decrease zeroCount. 
+Once the window is valid again, I update the maximum window length using r - l + 1. Finally, I return the maximum length."
