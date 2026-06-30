@@ -1,0 +1,116 @@
+1--Brute force
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int n = s.length();
+        int maxLength = 0;
+
+        for (int i = 0; i < n; i++) {
+
+            unordered_set<char> st;
+
+            for (int j = i; j < n; j++) {
+
+                if (st.count(s[j]))
+                    break;
+
+                st.insert(s[j]);
+                maxLength = max(maxLength, j - i + 1);
+            }
+        }
+
+        return maxLength;
+    }
+};
+
+2---Optimised
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        if(s.empty()){
+            return 0;
+        }
+        int l=0;
+        unordered_set<char>set;
+        int maxlength=INT_MIN;
+        for(int r=0;r<s.length();r++){
+           while(set.count(s[r])){
+             set.erase(s[l]);
+             l++;
+           }
+           set.insert(s[r]);
+           maxlength=max(maxlength,r-l+1);
+        }
+        return maxlength;
+    }
+};
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+"I use two pointers:
+
+l is the left pointer.
+r is the right pointer.
+
+The window is always from l to r."
+
+a b c a b c
+^     ^
+l     r
+Step 3: Explain the set
+
+"I use an unordered_set to store all the characters that are currently inside the window."
+
+Window = abc
+
+Set = {a, b, c}
+Step 4: Explain moving the right pointer
+
+"I move the right pointer one step at a time. If the current character is not in the set, I simply insert it."
+
+Example:
+
+Window = ab
+
+Next character = c
+
+Set = {a, b}
+
+Insert c
+
+Set = {a, b, c}
+Step 5: Explain duplicates
+
+"If the current character is already in the set, it means there is a duplicate. So I keep removing characters from the left side until the duplicate is removed."
+
+Example:
+
+a b c a
+      ^
+      r
+
+The second 'a' is already in the set.
+
+Remove from left:
+
+Remove 'a'
+
+Window becomes
+
+b c a
+
+Now the window has unique characters again.
+
+Step 6: Update the answer
+
+"After every successful insertion, I calculate the current window length using r - l + 1 and update the maximum length."
+
+maxlength = max(maxlength, r - l + 1);
+Explain the while loop
+while(set.count(s[r])) {
+    set.erase(s[l]);
+    l++;
+}
+
+You can say:
+
+"If the current character already exists in the window, 
+I keep removing characters from the left until the duplicate is gone. Then I can safely add the current character."
