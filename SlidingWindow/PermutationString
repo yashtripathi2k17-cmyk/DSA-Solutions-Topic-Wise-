@@ -1,0 +1,78 @@
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+       int i=0;
+       vector<int>freq1(26,0),freq2(26,0);
+       for(int i=0;i<s1.length();i++){
+           freq1[s1[i]-'a']++;
+       }
+       int k=s1.length();
+       for(int j=0;j<s2.length();j++){
+        freq2[s2[j]-'a']++;
+        if(j-i+1>k){
+            freq2[s2[i]-'a']--;
+            i++;
+        }
+        if(j-i+1==k){
+            if(freq1==freq2){
+                return true;
+            }
+        }
+       }
+       return false;
+
+
+    }
+};
+Step 1: Explain the Idea (Big Picture)
+
+"The main observation is that every permutation of s1 has the same length and the same character frequencies as s1. So instead of generating all permutations, I check every substring of s2 having the same length as s1."
+
+Step 2: Explain the Frequency Arrays
+vector<int> freq1(26,0), freq2(26,0);
+
+Say:
+
+"I use two frequency arrays. freq1 stores the frequency of characters in s1, and freq2 stores the frequency of the current window in s2."
+
+Step 3: Build Frequency of s1
+for(int i=0; i<s1.length(); i++){
+    freq1[s1[i]-'a']++;
+}
+
+Say:
+
+"First, I count the frequency of every character in s1."
+
+Step 4: Sliding Window
+for(int j=0; j<s2.length(); j++)
+
+Say:
+
+"Now I slide a fixed-size window over s2. The right pointer adds a new character to the window."
+
+freq2[s2[j]-'a']++;
+
+"I add the current character to the window frequency."
+
+If the window becomes larger than s1.length():
+
+if(j-i+1 > k){
+    freq2[s2[i]-'a']--;
+    i++;
+}
+
+Say:
+
+"If the window size becomes greater than s1.length(), I remove the leftmost character and move the left pointer so that the window size remains fixed."
+
+Step 5: Compare Frequencies
+if(j-i+1 == k){
+    if(freq1 == freq2){
+        return true;
+    }
+}
+
+Say:
+
+"Whenever the window size becomes equal to s1.length(), I compare the frequency of the current window with the frequency of s1. If both are equal, it means the current window is a permutation of s1, so I return true."
