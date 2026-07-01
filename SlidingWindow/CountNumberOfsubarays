@@ -1,0 +1,59 @@
+1---Brute Force
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+
+        int n = nums.size();
+        int count = 0;
+
+        for (int i = 0; i < n; i++) {
+
+            int sum = 0;
+
+            for (int j = i; j < n; j++) {
+
+                sum += nums[j];
+
+                if (sum == k) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+};
+2---Optimised code
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+
+        unordered_map<int, int> mp;
+
+        mp[0] = 1;      // Prefix sum 0 appears once
+
+        int sum = 0;
+        int count = 0;
+
+        for (int i = 0; i < nums.size(); i++) {
+
+            sum += nums[i];
+
+            // Check if required prefix sum exists
+            if (mp.find(sum - k) != mp.end()) {
+                count += mp[sum - k];
+            }
+
+            // Store current prefix sum
+            mp[sum]++;
+        }
+
+        return count;
+    }
+};
+https://chatgpt.com/s/m_6a44a6db95b881918d01e1ef1b314e91
+"The brute force approach checks every subarray, which takes O(n²). To optimize it, I use 
+Prefix Sum and a HashMap. While traversing the array, I maintain the current prefix sum. At every index,
+I look for currentSum - k in the HashMap. If it exists, I add its frequency to my answer because each occurrence
+represents a different valid starting point for a subarray
+ending at the current index. Finally, I store the current prefix sum by increasing its frequency. This gives an O(n) solution."
