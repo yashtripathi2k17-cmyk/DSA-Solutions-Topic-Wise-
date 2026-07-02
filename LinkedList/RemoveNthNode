@@ -1,0 +1,62 @@
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* dummy = new ListNode(0);
+        dummy->next = head;
+
+        ListNode* slow = dummy;
+        ListNode* fast = dummy;
+        // Move fast n+1 steps
+        for(int i = 0; i <= n; i++){
+            fast = fast->next;
+        }
+        while(fast != NULL){
+            slow = slow->next;
+            fast = fast->next;
+        }
+        slow->next = slow->next->next;
+        return dummy->next;
+    }
+};
+
+Interview Explanation
+Step 1
+
+"I use two pointers, slow and fast, along with a dummy node."
+
+Step 2
+
+"First, I move the fast pointer n+1 steps ahead."
+
+Step 3
+
+"Then I move both pointers one step at a time."
+
+Step 4
+
+"When the fast pointer reaches the end, the slow pointer is just before the node that needs to be deleted."
+
+Step 5
+
+"I skip that node by changing the next pointer."
+Dummy Node
+
+↓
+
+Move Fast n+1 steps
+
+↓
+
+Move Slow & Fast together
+
+↓
+
+Fast reaches NULL
+
+↓
+
+Slow is before node to delete
+
+↓
+
+Delete node
