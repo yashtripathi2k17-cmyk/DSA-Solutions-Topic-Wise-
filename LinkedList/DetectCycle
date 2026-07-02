@@ -1,0 +1,31 @@
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+
+        ListNode *slow = head;
+        ListNode *fast = head;
+
+        while(fast != NULL && fast->next != NULL){
+
+            slow = slow->next;
+            fast = fast->next->next;
+
+            if(slow == fast){
+                return true;
+            }
+        }
+
+        return false;
+    }
+};
+1. Initialize slow and fast.
+
+2. Slow → 1 step.
+
+3. Fast → 2 steps.
+
+4. If slow == fast
+      Cycle exists.
+
+5. If fast reaches NULL
+      No cycle.
