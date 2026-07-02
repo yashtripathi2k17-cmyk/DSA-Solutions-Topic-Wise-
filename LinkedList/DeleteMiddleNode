@@ -1,0 +1,40 @@
+class Solution {
+public:
+    ListNode* deleteMiddle(ListNode* head) {
+        if(head == NULL || head->next == NULL)
+            return NULL;
+
+        ListNode* slow = head;
+        ListNode* fast = head;
+        ListNode* prev = NULL;
+
+        while(fast != NULL && fast->next != NULL){
+            prev = slow;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        prev->next = slow->next;
+        return head;
+    }
+};
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Interview Explanation
+Step 1
+
+"I use three pointers: prev, slow, and fast."
+
+Step 2
+
+"Slow moves one step, and fast moves two steps."
+
+Step 3
+
+"Prev always stays one node behind slow."
+
+Step 4
+
+"When slow reaches the middle, prev is just before the middle node."
+
+Step 5
+
+"I delete the middle node by connecting prev directly to slow->next."
