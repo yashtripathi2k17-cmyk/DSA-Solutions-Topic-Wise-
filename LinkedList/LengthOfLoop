@@ -1,0 +1,89 @@
+class Solution {
+public:
+    int countNodesinLoop(ListNode *head) {
+        ListNode *slow = head;
+        ListNode *fast = head;
+
+        while(fast != NULL && fast->next != NULL){
+
+            slow = slow->next;
+            fast = fast->next->next;
+
+            if(slow == fast){
+
+                int count = 1;
+
+                fast = fast->next;
+
+                while(slow != fast){
+                    count++;
+                    fast = fast->next;
+                }
+
+                return count;
+            }
+        }
+
+        return 0;
+    }
+};
+Interview Explanation
+Step 1
+
+"First, I detect the cycle using slow and fast pointers."
+
+Step 2
+
+"Once both pointers meet, I know they are inside the loop."
+
+Step 3
+
+"I keep one pointer fixed and move the other pointer one step at a time."
+
+Step 4
+
+"I count every step until it reaches the same node again."
+
+Step 5
+
+"The count gives the length of the loop."
+
+Easy Notes
+1. Detect cycle.
+
+2. Both pointers meet.
+
+3. Keep one pointer fixed.
+
+4. Move the other pointer.
+
+5. Count until it comes back.
+
+6. Return count.
+⭐ Memory Trick (All Three Problems)
+Detect Cycle
+↓
+Fast catches Slow
+
+-------------------
+
+Find Start
+↓
+One pointer → Head
+One pointer → Meeting Point
+Move both one step
+Meet = Start
+
+-------------------
+
+Find Loop Length
+↓
+After meeting
+Move one pointer around the loop
+Count steps
+
+These three problems all use the same Floyd's Slow and Fast Pointer technique. The only difference is what you do after the slow and fast pointers meet:
+
+Detect Cycle: Return true.
+Find Start of Cycle: Reset one pointer to head, then move both one step until they meet.
+Find Loop Length: Count the number of nodes in the cycle by moving one pointer around the loop.
