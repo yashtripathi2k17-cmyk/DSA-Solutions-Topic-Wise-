@@ -1,0 +1,48 @@
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode *slow = head;
+        ListNode *fast = head;
+        while(fast != NULL && fast->next != NULL){
+            slow = slow->next;
+            fast = fast->next->next;
+            if(slow == fast){
+                slow = head;
+                while(slow != fast){
+                    slow = slow->next;
+                    fast = fast->next;
+                }
+                return slow;
+            }
+        }
+        return NULL;
+    }
+};
+
+Interview Explanation
+Step 1
+
+"First, I detect whether a cycle exists using slow and fast pointers."
+
+Step 2
+
+"If both pointers meet, I move the slow pointer back to the head."
+
+Step 3
+
+"Now both pointers move one step at a time."
+
+Step 4
+
+"The node where they meet again is the starting point of the cycle."
+
+Easy Notes
+1. Detect cycle.
+
+2. Slow = Head.
+
+3. Fast = Meeting Point.
+
+4. Move both one step.
+
+5. Meeting point = Start of Cycle.
