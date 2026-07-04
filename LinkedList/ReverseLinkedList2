@@ -1,0 +1,99 @@
+Example
+Input
+1 → 2 → 3 → 4 → 5
+left = 2
+right = 4
+
+Reverse only
+
+2 → 3 → 4
+Output
+1 → 4 → 3 → 2 → 5
+
+Approach (Easy to Understand)
+Step 1
+
+Find the node before the left position.
+
+1 → 2 → 3 → 4 → 5
+↑
+leftPrev
+Step 2
+
+Find the right node.
+
+1 → 2 → 3 → 4 → 5
+            ↑
+          rightNode
+Step 3
+Break the list into three parts.
+1
+
+2 → 3 → 4
+
+5
+
+Step 4
+Reverse the middle part.
+4 → 3 → 2
+Step 5
+Reconnect.
+1 → 4 → 3 → 2 → 5
+
+------------------------------------------------------------------------------
+class Solution {
+    ListNode* reverse(ListNode* head){
+        ListNode* prev = NULL;
+        ListNode* curr = head;
+        while(curr){
+            ListNode* next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+public:
+
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+
+        if(head == NULL || left == right)
+            return head;
+
+        ListNode* dummy = new ListNode(0);
+        dummy->next = head;
+
+        // Find node before left
+        ListNode* leftPrev = dummy;
+
+        for(int i = 1; i < left; i++){
+            leftPrev = leftPrev->next;
+        }
+
+        // First node to reverse
+        ListNode* start = leftPrev->next;
+
+        // Find right node
+        ListNode* rightNode = start;
+
+        for(int i = left; i < right; i++){
+            rightNode = rightNode->next;
+        }
+
+        // Node after right
+        ListNode* end = rightNode->next;
+
+        // Break list
+        leftPrev->next = NULL;
+        rightNode->next = NULL;
+
+        // Reverse
+        ListNode* newHead = reverse(start);
+
+        // Connect
+        leftPrev->next = newHead;
+        start->next = end;
+
+        return dummy->next;
+    }
+};
