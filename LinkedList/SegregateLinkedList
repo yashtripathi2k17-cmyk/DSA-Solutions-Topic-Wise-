@@ -1,0 +1,34 @@
+class Solution {
+public:
+    Node* divide(int N, Node *head) {
+
+        Node* evenDummy = new Node(-1);
+        Node* oddDummy = new Node(-1);
+
+        Node* even = evenDummy;
+        Node* odd = oddDummy;
+
+        Node* temp = head;
+
+        while(temp){
+
+            if(temp->data % 2 == 0){
+
+                even->next = temp;
+                even = even->next;
+            }
+            else{
+
+                odd->next = temp;
+                odd = odd->next;
+            }
+
+            temp = temp->next;
+        }
+
+        even->next = oddDummy->next;
+        odd->next = NULL;
+
+        return evenDummy->next;
+    }
+};
