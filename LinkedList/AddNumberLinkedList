@@ -1,0 +1,178 @@
+1----ADD 1 NUMBER
+
+class Solution {
+public:
+    ListNode* reverse(ListNode* head){
+        ListNode* prev = NULL;
+        ListNode* curr = head;
+        while(curr){
+            ListNode* next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+    ListNode* addOne(ListNode* head) {
+        head = reverse(head);
+
+        ListNode* temp = head;
+        int carry = 1;
+
+        while(temp != NULL){
+
+            int sum = temp->val + carry;
+
+            temp->val = sum % 10;
+
+            carry = sum / 10;
+
+            if(carry == 0)
+                break;
+
+            if(temp->next == NULL){
+                temp->next = new ListNode(0);
+            }
+
+            temp = temp->next;
+        }
+        return reverse(head);
+    }
+};
+
+Interview Explanation
+Step 1
+"I reverse the linked list because addition starts from the last digit."
+
+Step 2
+"I initialize carry as 1 because I need to add one."
+
+Step 3
+"I add carry to each node."
+
+Step 4
+"If carry becomes zero, I stop."
+
+Step 5
+"Finally, I reverse the linked list again."
+
+Easy Notes
+Reverse
+
+↓
+
+Add Carry
+
+↓
+
+Handle Carry
+
+↓
+
+Reverse Again
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+2--------Add Two Numbers (LeetCode 2)
+Problem
+Each linked list stores a number.
+Example
+
+List1
+2 → 4 → 3
+
+List2
+5 → 6 → 4
+
+These represent
+
+342
+
+465
+
+Answer
+
+342 + 465 = 807
+
+Output
+
+7 → 0 → 8
+
+(Here, digits are stored in reverse order.)
+
+Big Picture ⭐
+
+Just like normal addition.
+
+Digit1
+
++
+
+Digit2
+
++
+
+Carry
+
+↓
+
+New Digit
+
+↓
+
+New Carry
+Optimized Code (C++)
+
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* dummy = new ListNode(0);
+        ListNode* temp = dummy;
+
+        int carry = 0;
+
+        while(l1 != NULL || l2 != NULL || carry){
+
+            int sum = carry;
+
+            if(l1){
+                sum += l1->val;
+                l1 = l1->next;
+            }
+
+            if(l2){
+                sum += l2->val;
+                l2 = l2->next;
+            }
+
+            temp->next = new ListNode(sum % 10);
+
+            carry = sum / 10;
+
+            temp = temp->next;
+        }
+
+        return dummy->next;
+    }
+};
+Interview Explanation
+Step 1
+
+"I create a dummy node to store the answer."
+
+Step 2
+
+"I traverse both linked lists together."
+
+Step 3
+
+"For every node, I add the first digit, second digit, and carry."
+
+Step 4
+
+"The new node stores sum % 10, and the new carry is sum / 10."
+
+Step 5
+
+"I continue until both linked lists and the carry are finished."
+
+
