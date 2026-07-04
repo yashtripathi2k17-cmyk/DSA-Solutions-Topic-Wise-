@@ -1,0 +1,85 @@
+Problem
+Given a linked list
+1 → 2 → 3 → 4 → 5
+Reorder it as
+1 → 5 → 2 → 4 → 3
+
+class Solution {
+public:
+    ListNode* reverse(ListNode* head){
+        ListNode* prev = NULL;
+        ListNode* curr = head;
+        while(curr){
+            ListNode* next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    void reorderList(ListNode* head) {
+        if(head == NULL || head->next == NULL)
+            return;
+        // Step 1: Find Middle
+        ListNode* slow = head;
+        ListNode* fast = head;
+
+        while(fast->next != NULL && fast->next->next != NULL){
+
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+      
+        // Step 2: Reverse Second Half
+        ListNode* second = reverse(slow->next);
+
+        slow->next = NULL;
+
+        // Step 3: Merge
+        ListNode* first = head;
+
+        while(second != NULL){
+
+            ListNode* temp1 = first->next;
+            ListNode* temp2 = second->next;
+
+            first->next = second;
+            second->next = temp1;
+
+            first = temp1;
+            second = temp2;
+        }
+    }
+};
+Big Picture ⭐
+
+Think of the solution in 3 steps.
+
+Step 1
+Find Middle
+
+1 → 2 → 3 → 4 → 5
+        ↑
+
+↓
+
+Step 2
+Reverse Second Half
+
+First Half
+
+1 → 2 → 3
+
+Second Half
+
+5 → 4
+
+↓
+
+Step 3
+Merge Alternately
+
+1 → 5 → 2 → 4 → 3
+
+That's all!
