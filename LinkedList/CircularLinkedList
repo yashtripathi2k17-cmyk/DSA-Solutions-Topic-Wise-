@@ -1,0 +1,186 @@
+1------------Detect Circular Linked List
+Approach
+If the list is empty, return true.
+Start from head->next.
+Traverse the list.
+If you reach head again → Circular.
+If you reach NULL → Not Circular.
+Code
+bool isCircular(Node* head) {
+
+    if(head == NULL)
+        return true;
+
+    Node* temp = head->next;
+
+    while(temp != NULL && temp != head){
+        temp = temp->next;
+    }
+
+    return (temp == head);
+}
+Interview Explanation
+
+"I traverse the linked list. If I reach the head again, the list is circular. If I reach NULL, it is not circular."
+
+2. Insert at End in Circular Linked List
+Approach
+Create a new node.
+If the list is empty:
+Make the new node point to itself.
+Otherwise:
+Find the last node.
+Connect the last node to the new node.
+Connect the new node back to the head.
+Code
+Node* insertEnd(Node* head, int data) {
+
+    Node* newNode = new Node(data);
+
+    if(head == NULL){
+        newNode->next = newNode;
+        return newNode;
+    }
+
+    Node* temp = head;
+
+    while(temp->next != head){
+        temp = temp->next;
+    }
+
+    temp->next = newNode;
+    newNode->next = head;
+
+    return head;
+}
+Interview Explanation
+
+"I first find the last node. Then I connect the last node to the new node, and the new node back to the head."
+
+3. Delete a Node
+Approach
+Handle empty list.
+Find the node to delete and its previous node.
+If deleting the head:
+Find the last node.
+Move head to the next node.
+Update the last node's next pointer.
+Otherwise:
+Skip the node to delete.
+Code
+Node* deleteNode(Node* head, int key) {
+
+    if(head == NULL)
+        return NULL;
+
+    Node *curr = head;
+    Node *prev = NULL;
+
+    while(curr->data != key){
+
+        if(curr->next == head)
+            return head;
+
+        prev = curr;
+        curr = curr->next;
+    }
+
+    if(curr == head){
+
+        if(head->next == head){
+            delete head;
+            return NULL;
+        }
+
+        Node* last = head;
+
+        while(last->next != head){
+            last = last->next;
+        }
+
+        last->next = head->next;
+
+        head = head->next;
+
+        delete curr;
+
+        return head;
+    }
+
+    prev->next = curr->next;
+
+    delete curr;
+
+    return head;
+}
+Interview Explanation
+
+"I first find the node to delete. If it is the head node, I update the last node's next pointer. Otherwise, I simply skip the node."
+
+4. Count Nodes
+Approach
+If the list is empty, return 0.
+Start from the head.
+Count nodes until you reach the head again.
+Code
+int countNodes(Node* head){
+
+    if(head == NULL)
+        return 0;
+
+    int count = 1;
+
+    Node* temp = head->next;
+
+    while(temp != head){
+
+        count++;
+
+        temp = temp->next;
+    }
+
+    return count;
+}
+Interview Explanation
+
+"I traverse the circular linked list until I reach the head again and count every node."
+
+5. Split Circular Linked List into Two Halves ⭐⭐⭐⭐⭐
+Approach
+Use slow and fast pointers.
+Move:
+Slow → 1 step
+Fast → 2 steps
+When the fast pointer reaches the end:
+Slow will be at the middle.
+First half:
+Head → Slow
+Second half:
+Slow->next → Last node
+Update both last pointers to make two separate circular lists.
+Code
+void splitList(Node* head, Node** head1, Node** head2) {
+
+    if(head == NULL)
+        return;
+
+    Node* slow = head;
+    Node* fast = head;
+
+    while(fast->next != head && fast->next->next != head){
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    if(fast->next->next == head)
+        fast = fast->next;
+
+    *head1 = head;
+    *head2 = slow->next;
+
+    fast->next = slow->next;
+    slow->next = head;
+}
+Interview Explanation
+
+"I use the slow and fast pointer technique to find the middle of the circular linked list. Then I split the list into two halves by updating the next pointers. Finally, I make both halves circular again."
