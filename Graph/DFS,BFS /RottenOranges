@@ -1,0 +1,236 @@
+1---Rotten Oranges
+Problem Statement
+
+You are given a grid where:
+
+0 → Empty Cell
+1 → Fresh Orange 🍊
+2 → Rotten Orange 🤢
+
+Every 1 minute, every rotten orange makes its 4 adjacent fresh oranges rotten.
+
+Adjacent means only:
+
+      Up
+Left  Cell  Right
+     Down
+
+❌ Diagonal cells are NOT considered.
+
+Your task is to return:
+
+Minimum time required to rot all oranges.
+Return -1 if some fresh orange can never become rotten.
+Example
+
+Input
+
+2 1 1
+1 1 0
+0 1 1
+
+Initially
+
+🤢 🍊 🍊
+🍊 🍊 ⬜
+⬜ 🍊 🍊
+
+After 1 minute
+
+🤢 🤢 🍊
+🤢 🍊 ⬜
+⬜ 🍊 🍊
+
+After 2 minutes
+
+🤢 🤢 🤢
+🤢 🤢 ⬜
+⬜ 🍊 🍊
+
+After 3 minutes
+
+🤢 🤢 🤢
+🤢 🤢 ⬜
+⬜ 🤢 🍊
+
+After 4 minutes
+
+🤢 🤢 🤢
+🤢 🤢 ⬜
+⬜ 🤢 🤢
+
+Answer
+
+4
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+
+        int rows = grid.size();
+        int cols = grid[0].size();
+
+        queue<pair<int, int>> q;
+        int fresh = 0;
+
+        // Step 1: Find all rotten oranges and count fresh oranges
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+
+                if (grid[i][j] == 2) {
+                    q.push({i, j});
+                }
+                else if (grid[i][j] == 1) {
+                    fresh++;
+                }
+            }
+        }
+
+        // If there are no fresh oranges
+        if (fresh == 0)
+            return 0;
+
+        int minutes = 0;
+
+        // Up, Down, Left, Right
+        int dr[] = {-1, 1, 0, 0};
+        int dc[] = {0, 0, -1, 1};
+
+        // BFS
+        while (!q.empty()) {
+
+            int size = q.size();
+            bool changed = false;
+
+            while (size--) {
+
+                pair<int, int> current = q.front();
+                q.pop();
+
+                int r = current.first;
+                int c = current.second;
+
+                // Visit all 4 neighbours
+                for (int k = 0; k < 4; k++) {
+
+                    int nr = r + dr[k];
+                    int nc = c + dc[k];
+
+                    // Check valid cell
+                    if (nr >= 0 && nr < rows &&
+                        nc >= 0 && nc < cols &&
+                        grid[nr][nc] == 1) {
+
+                        grid[nr][nc] = 2;
+                        fresh--;
+
+                        q.push({nr, nc});
+                        changed = true;
+                    }
+                }
+            }
+
+            if (changed)
+                minutes++;
+        }
+
+        if (fresh == 0)
+            return minutes;
+
+        return -1;
+    }
+};
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+How to remember this code
+Step 1 → Scan the grid
+for(...)
+
+Find:
+
+Rotten oranges → Put into queue
+Fresh oranges → Count them
+Step 2 → Start BFS
+while(!q.empty())
+
+As long as there are rotten oranges that can spread.
+
+Step 3 → One Minute
+int size = q.size();
+
+size means:
+
+How many oranges will spread in this minute?
+
+Step 4 → Process every rotten orange
+pair<int,int> current = q.front();
+q.pop();
+
+Take one rotten orange.
+
+Step 5 → Visit 4 neighbours
+for(int k=0;k<4;k++)
+
+Check
+
+Up
+Down
+Left
+Right
+Step 6 → If neighbour is fresh
+grid[nr][nc] = 2;
+fresh--;
+q.push({nr,nc});
+Make it rotten.
+Decrease fresh count.
+Put it into the queue so it spreads in the next minute.
+Step 7 → Finish one minute
+if(changed)
+    minutes++;
+
+Increase time only if at least one fresh orange became rotten.
+
+Step 8 → Return answer
+if(fresh == 0)
+    return minutes;
+
+return -1;
+Interview Flow (Easy to Remember)
+Scan Grid
+    ↓
+Queue ← Rotten Oranges
+Fresh ← Count
+    ↓
+While Queue not Empty
+    ↓
+Take Current Rotten Orange
+    ↓
+Visit 4 Neighbours
+    ↓
+Fresh → Rotten
+    ↓
+Push into Queue
+    ↓
+One Minute Over
+    ↓
+Fresh == 0 ?
+    ↓
+Yes → Return Minutes
+No → Return -1
+
+
+
+Interview Shortcut
+
+Whenever you see this condition:
+
+if (nr >= 0 &&
+    nr < rows &&
+    nc >= 0 &&
+    nc < cols &&
+    grid[nr][nc] == 1)
+
+read it in English as:
+
+"If the neighbour is inside the grid and it is a fresh orange, then rot it and add it to the queue."
