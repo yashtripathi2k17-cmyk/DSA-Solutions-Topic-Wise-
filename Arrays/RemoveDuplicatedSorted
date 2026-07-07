@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+
+        int j = 0;
+
+        for (int i = 1; i < nums.size(); i++) {
+
+            if (nums[i] != nums[j]) {
+                j++;
+                nums[j] = nums[i];
+            }
+        }
+
+        return j + 1;
+    }
+};
+
+
+Interview Explanation (30 seconds)
+
+"Since the array is sorted, duplicates always appear next to each other. I use two pointers: i scans every element, while j keeps track of the last unique element. Whenever nums[i] is different from nums[j], I increment j and copy the new unique value to nums[j]. At the end, the first j + 1 elements contain all unique values."
+
+Complexity
+Time: O(n) (one pass)
+Space: O(1) (in-place)
+🧠 Pattern to Remember
+
+This is the classic slow and fast pointer pattern:
+
+Fast pointer (i) → Reads every element.
+Slow pointer (j) → Marks where the next valid (unique) element should be placed.
