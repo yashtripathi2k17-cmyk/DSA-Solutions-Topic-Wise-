@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int missingNumber(vector<int>& arr, int N) {
+
+        int expected = N * (N + 1) / 2;
+
+        int actual = 0;
+
+        for(int x : arr)
+            actual += x;
+
+        return expected - actual;
+    }
+};
+
+class Solution {
+public:
+    int missingNumber(vector<int>& arr, int N) {
+
+        int xor1 = 0;
+        int xor2 = 0;
+
+        for(int i = 1; i <= N; i++)
+            xor1 ^= i;
+
+        for(int x : arr)
+            xor2 ^= x;
+
+        return xor1 ^ xor2;
+    }
+};
