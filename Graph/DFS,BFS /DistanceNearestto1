@@ -1,0 +1,459 @@
+📘 Distance of Nearest Cell Having 1 (0/1 Matrix) – Clean Interview Notes
+1. Problem Statement
+
+You are given a matrix containing only 0 and 1.
+
+For every cell, find the minimum distance to the nearest cell containing 1.
+
+Distance is calculated only in 4 directions:
+
+↑ Up
+↓ Down
+← Left
+→ Right
+Example
+
+Input
+
+0 0 0
+0 1 0
+1 0 0
+
+Output
+
+1 1 2
+1 0 1
+0 1 2
+
+Explanation
+
+Cell (1,1) already contains 1 → distance = 0
+Cell (2,0) already contains 1 → distance = 0
+Every other cell stores its shortest distance to the nearest 1.
+2. Brute Force Idea
+
+For every cell,
+
+Search the entire matrix to find the nearest 1.
+
+For every 0
+
+↓
+
+Search whole matrix
+
+↓
+
+Calculate minimum distance
+Complexity
+Time = O((N × M)²)
+
+Very slow.
+
+3. Big Picture (The Main Idea)
+
+Instead of asking
+
+"Where is the nearest 1 for every 0?"
+
+Reverse the thinking.
+
+Ask
+
+"Can every 1 spread its distance to all other cells?"
+
+Imagine every 1 as a water source.
+
+Initially
+
+0 0 0
+0 1 0
+1 0 0
+
+Step 0
+
+Distance 0
+
+0 0 0
+0 1 0
+1 0 0
+
+Step 1
+
+Every 1 spreads to its neighbours.
+
+1 1 0
+1 1 1
+1 1 0
+
+Step 2
+
+Those neighbours spread again.
+
+1 1 2
+1 0 1
+0 1 2
+
+Finally every cell gets the shortest distance.
+
+4. Why BFS?
+
+BFS always finds the shortest distance in an unweighted graph.
+
+A matrix is simply a graph.
+
+Each cell has four neighbours.
+
+      Up
+
+Left Cell Right
+
+     Down
+
+So we use BFS.
+
+5. Why Multi-Source BFS?
+
+Normally,
+
+BFS starts from one source.
+
+Example
+
+A
+|
+B
+|
+C
+
+Here,
+
+We have many sources.
+
+Example
+
+0 0 0
+0 1 0
+1 0 0
+
+Both
+
+(1,1)
+
+(2,0)
+
+are sources.
+
+So we put all 1's into the queue initially.
+
+This is called
+
+Multi-Source BFS
+6. Algorithm
+Step 1
+
+Create a distance matrix.
+
+Initially every distance is
+
+-1
+
+meaning
+
+Not Visited
+Step 2
+
+Traverse the matrix.
+
+Whenever
+
+grid[i][j] == 1
+
+then
+
+distance = 0
+
+push into queue
+Step 3
+
+Run BFS.
+
+Take one cell from queue.
+
+Visit
+
+Up
+Down
+Left
+Right
+Step 4
+
+If neighbour
+
+is inside matrix
+is not visited
+
+then
+
+distance = parent distance + 1
+
+Push neighbour into queue.
+
+Step 5
+
+Repeat until queue becomes empty.
+
+7. Working of the Code
+Distance Matrix
+vector<vector<int>> dist(n, vector<int>(m, -1));
+
+Creates
+
+-1 -1 -1
+-1 -1 -1
+-1 -1 -1
+Queue
+queue<pair<int,int>> q;
+
+Stores
+
+(row,column)
+
+Example
+
+(1,1)
+
+(2,0)
+Traverse Matrix
+for(int i=0;i<n;i++)
+{
+    for(int j=0;j<m;j++)
+
+Checks every cell.
+
+If Cell Contains 1
+if(grid[i][j]==1)
+
+This is a BFS source.
+
+Distance = 0
+dist[i][j]=0;
+
+Because
+
+Distance from 1 to itself = 0
+Push into Queue
+q.push({i,j});
+
+Now BFS starts from this cell.
+
+Direction Arrays
+int dr[]={-1,1,0,0};
+int dc[]={0,0,-1,1};
+Direction	dr	dc
+Up	-1	0
+Down	1	0
+Left	0	-1
+Right	0	1
+
+Instead of writing four separate conditions.
+
+BFS Loop
+while(!q.empty())
+
+Continue until every reachable cell is visited.
+
+Remove Front Cell
+auto node=q.front();
+q.pop();
+
+Suppose
+
+Queue
+
+(1,1)
+(2,0)
+
+Remove
+
+(1,1)
+Current Position
+int r=node.first;
+int c=node.second;
+
+Example
+
+node=(1,1)
+
+r=1
+
+c=1
+Visit Four Neighbours
+for(int k=0;k<4;k++)
+
+Runs
+
+Up
+
+Down
+
+Left
+
+Right
+Calculate Neighbour
+int nr=r+dr[k];
+int nc=c+dc[k];
+
+Suppose
+
+Current=(1,1)
+
+Then
+
+Up=(0,1)
+
+Down=(2,1)
+
+Left=(1,0)
+
+Right=(1,2)
+Check Valid Cell
+if(nr>=0 &&
+   nr<n &&
+   nc>=0 &&
+   nc<m &&
+   dist[nr][nc]==-1)
+
+Checks
+
+Inside matrix
+Not visited before
+Update Distance
+dist[nr][nc]=dist[r][c]+1;
+
+Suppose
+
+Current distance
+
+0
+
+Neighbour
+
+1
+
+Suppose current
+
+2
+
+Neighbour
+
+3
+
+Every BFS level increases distance by 1.
+
+Push New Cell
+q.push({nr,nc});
+
+Later this neighbour will also spread to its neighbours.
+
+8. Complete Code (Easy Version)
+class Solution {
+public:
+
+    vector<vector<int>> nearest(vector<vector<int>>& grid) {
+
+        int n = grid.size();
+        int m = grid[0].size();
+
+        vector<vector<int>> dist(n, vector<int>(m, -1));
+
+        queue<pair<int,int>> q;
+
+        // Push all 1's into queue
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+
+                if(grid[i][j] == 1) {
+                    dist[i][j] = 0;
+                    q.push({i, j});
+                }
+
+            }
+        }
+
+        int dr[] = {-1, 1, 0, 0};
+        int dc[] = {0, 0, -1, 1};
+
+        while(!q.empty()) {
+
+            auto node = q.front();
+            q.pop();
+
+            int r = node.first;
+            int c = node.second;
+
+            for(int k = 0; k < 4; k++) {
+
+                int nr = r + dr[k];
+                int nc = c + dc[k];
+
+                if(nr >= 0 && nr < n &&
+                   nc >= 0 && nc < m &&
+                   dist[nr][nc] == -1) {
+
+                    dist[nr][nc] = dist[r][c] + 1;
+                    q.push({nr, nc});
+                }
+            }
+        }
+
+        return dist;
+    }
+};
+9. Dry Run
+
+Input
+
+0 0 0
+0 1 0
+1 0 0
+
+Queue initially
+
+(1,1)
+
+(2,0)
+
+Distance
+
+-1 -1 -1
+-1  0 -1
+ 0 -1 -1
+
+Process
+
+(1,1)
+
+Neighbours become
+
+-1 1 -1
+1 0 1
+0 1 -1
+
+Process remaining queue.
+
+Final answer
+
+1 1 2
+1 0 1
+0 1 2
+10. Time & Space Complexity
+Time
+O(N × M)
+
+Every cell enters the queue only once.
+
+Space
+O(N × M)
+
+For the distance matrix and queue.
