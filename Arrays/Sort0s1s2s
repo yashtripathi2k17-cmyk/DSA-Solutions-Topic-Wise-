@@ -62,6 +62,14 @@ public:
             }
         }
     }
+Easy Trick to Remember
+0 → Left side
+1 → Middle
+2 → Right side
+Value	Action
+0	Swap with low, low++, mid++
+1	mid++
+2	Swap with high, high--
 };
 
 
