@@ -33,3 +33,42 @@ public:
         return l + 1;
     }
 };
+Simple 5-Step Approach
+Use two pointers: l and r.
+l points to the last unique element.
+r scans the array from left to right.
+If nums[r] is different from nums[l], move l forward and copy nums[r] to nums[l].
+At the end, return l + 1 because l is the index of the last unique element.
+
+
+Algorithm (5 Steps)
+Keep the first 2 elements as they are.
+Start checking from index 2.
+Compare nums[r] with nums[l-2].
+If they are different, copy nums[r] to nums[l] and increment l.
+Return l.
+Code (Easy)
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+
+        int n = nums.size();
+
+        if (n <= 2)
+            return n;
+
+        int l = 2;
+
+        for (int r = 2; r < n; r++) {
+
+            if (nums[r] != nums[l - 2]) {
+
+                nums[l] = nums[r];
+                l++;
+
+            }
+        }
+
+        return l;
+    }
+};
