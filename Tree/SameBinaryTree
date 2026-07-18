@@ -1,0 +1,53 @@
+Same Binary Tree (LeetCode 100)
+Problem
+
+Given two binary trees p and q, return true if both trees are exactly the same.
+
+They are the same if:
+
+✅ Structure is the same.
+✅ Node values are the same.
+Simple Idea
+
+We compare both trees node by node using DFS (Recursion).
+
+At every node, check:
+
+Are both nodes NULL?
+Is one NULL and the other not?
+Are their values equal?
+Compare left subtrees.
+Compare right subtrees.
+
+If all checks pass, the trees are the same.
+
+
+class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+
+        if (p == NULL && q == NULL)
+            return true;
+
+        if (p == NULL || q == NULL)
+            return false;
+
+        if (p->val != q->val)
+            return false;
+
+        return isSameTree(p->left, q->left) &&
+               isSameTree(p->right, q->right);
+    }
+};
+Interview Explanation (5 Simple Points)
+I use DFS (recursion) to compare both trees node by node.
+If both nodes are NULL, they are the same, so I return true.
+If one node is NULL or the values are different, I return false.
+Otherwise, I recursively compare the left subtree and the right subtree.
+If both left and right comparisons return true, the trees are identical.
+
+
+
+
+
+
