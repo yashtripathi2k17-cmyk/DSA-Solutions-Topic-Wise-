@@ -1,0 +1,88 @@
+Balanced Binary Tree (LeetCode 110)
+What is a Balanced Binary Tree?
+A binary tree is balanced if, for every node:
+| Left Height - Right Height | <= 1
+That means the difference between the heights of the left and right subtrees should be 0 or 1.
+Example 1 (Balanced)
+        1
+       / \
+      2   3
+     / \
+    4   5
+
+At node 1:
+
+Left Height = 2
+Right Height = 1
+|2 - 1| = 1 ✓
+
+Every node satisfies the condition.
+
+Answer: True
+
+class Solution {
+public:
+    int height(TreeNode* root) {
+
+        if (root == NULL)
+            return 0;
+
+        int left = height(root->left);
+        if (left == -1) return -1;
+
+        int right = height(root->right);
+        if (right == -1) return -1;
+
+        if (abs(left - right) > 1)
+            return -1;
+
+        return 1 + max(left, right);
+    }
+
+    bool isBalanced(TreeNode* root) {
+        return height(root) != -1;
+    }
+};
+
+Balanced Binary Tree (LeetCode 110)
+What is a Balanced Binary Tree?
+
+A binary tree is balanced if, for every node:
+
+| Left Height - Right Height | <= 1
+
+That means the difference between the heights of the left and right subtrees should be 0 or 1.
+
+Example 1 (Balanced)
+        1
+       / \
+      2   3
+     / \
+    4   5
+
+At node 1:
+
+Left Height = 2
+Right Height = 1
+|2 - 1| = 1 ✓
+
+Every node satisfies the condition.
+
+Answer: True
+Interview Explanation (5 Simple Points)
+A tree is balanced if the height difference between the left and right subtree of every node is at most 1.
+I use DFS to calculate the height of each subtree.
+At every node, I check abs(leftHeight - rightHeight).
+If the difference is greater than 1, I return -1 to indicate the tree is not balanced.
+If no node returns -1, the tree is balanced. Time complexity is O(n) because each node is visited only once.
+Easy Memory Trick
+Height = 1 + max(left, right)
+
+Check = abs(left - right) <= 1
+
+If difference > 1 → return -1
+
+If height() != -1 → Balanced
+Time Complexity
+Time: O(n)
+Space: O(h) (recursive stack, where h is the tree height)
