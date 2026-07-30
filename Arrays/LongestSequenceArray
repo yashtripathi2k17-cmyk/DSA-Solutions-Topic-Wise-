@@ -1,3 +1,39 @@
+Interview Explanation (6 Simple Steps)
+Step 1
+
+"First, I store all numbers in a HashSet."
+
+Why?
+
+"Because searching in a HashSet takes O(1) time."
+
+Step 2
+
+"Then I visit every number."
+
+Step 3
+
+"Before starting a sequence, I check if the previous number exists."
+
+if(st.find(num-1)==st.end())
+
+Say:
+
+"If num-1 is not present, then this number is the beginning of a sequence."
+
+Step 4
+
+"Now I keep checking whether the next consecutive number exists."
+
+while(st.find(current+1)!=st.end())
+Step 5
+
+"I count the length of this sequence."
+
+Step 6
+
+"Finally, I update the maximum length and return the answer."
+
 class Solution {
 public:
     int longestConsecutive(vector<int>& nums) {
