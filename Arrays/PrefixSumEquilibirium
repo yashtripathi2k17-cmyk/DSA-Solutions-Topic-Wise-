@@ -1,0 +1,32 @@
+class Solution {
+  public:
+    int findEquilibrium(vector<int> &arr) {
+        // code here
+     int n=arr.size();
+     int leftsum=0;
+     int totalsum=0;
+     for(int i=0;i<n;i++){
+         totalsum+=arr[i];
+     }
+     int rightsum=0;
+     for(int i=0;i<arr.size();i++){
+        
+         rightsum=totalsum-arr[i]-leftsum;
+         if(leftsum==rightsum){
+             return i;
+         }
+          leftsum+=arr[i];
+         
+     }
+     return -1;
+    }
+};
+Interview Explanation
+
+"First, I calculate the total sum of all elements in the array. Then I traverse the array once. I maintain a variable leftSum which stores the sum of elements before the current index. To find the rightSum, I subtract the current element and leftSum from the total sum.
+
+Formula:
+
+rightSum = totalSum - arr[i] - leftSum
+
+If leftSum becomes equal to rightSum, then the current index is the equilibrium index, so I return it. Otherwise, I add the current element to leftSum and move to the next index. If no such index is found, I return -1."
