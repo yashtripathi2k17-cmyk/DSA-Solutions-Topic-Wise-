@@ -1,0 +1,462 @@
+1--
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int partition(vector<int>& arr, int st, int end) {
+
+    int idx = st - 1;
+    int pivot = arr[end];
+
+    for (int j = st; j <= end - 1; j++) {
+
+        if (arr[j] <= pivot) {
+            idx++;
+            swap(arr[j], arr[idx]);
+        }
+    }
+
+    // Put pivot at its correct position
+    idx++;
+    swap(arr[end], arr[idx]);
+
+    return idx;
+}
+
+void quickSort(vector<int>& arr, int st, int end) {
+
+    if (st < end) {
+
+        int pivIdx = partition(arr, st, end);
+
+        // Sort left part
+        quickSort(arr, st, pivIdx - 1);
+
+        // Sort right part
+        quickSort(arr, pivIdx + 1, end);
+    }
+}
+
+int main() {
+
+    vector<int> arr = {2, 1, 3, 4, 5, 6};
+
+    quickSort(arr, 0, arr.size() - 1);
+
+    for (int val : arr) {
+        cout << val << " ";
+    }
+
+    return 0;
+}
+
+1. Start with the basic idea
+
+Say:
+
+"Quick Sort is a Divide and Conquer sorting algorithm. I choose one element as a pivot and partition the array so that elements smaller than or equal to the pivot come to the left and larger elements come to the right. Then I recursively apply the same process to the left and right parts."
+
+The main idea is:
+
+Choose Pivot
+     ↓
+Partition
+     ↓
+Pivot reaches correct position
+     ↓
+Sort Left + Sort Right
+2. Explain partition()
+
+Your code:
+
+int partition(vector<int>& arr, int st, int end) {
+
+
+    int idx = st - 1;
+    int pivot = arr[end];
+
+
+    for (int j = st; j <= end - 1; j++) {
+
+
+        if (arr[j] <= pivot) {
+            idx++;
+            swap(arr[j], arr[idx]);
+        }
+    }
+
+
+    idx++;
+    swap(arr[end], arr[idx]);
+
+
+    return idx;
+}
+
+Say:
+
+"In my partition function, I take the last element as the pivot."
+
+Point to:
+
+int pivot = arr[end];
+
+Then:
+
+"I maintain idx to represent the position where the next smaller element should be placed."
+
+Initially:
+
+int idx = st - 1;
+
+Then:
+
+"I use another pointer j to scan the array from st to end - 1. Whenever I find an element smaller than or equal to the pivot, I increase idx and swap that element with arr[idx]."
+
+3. Simple example
+
+Suppose:
+
+[2, 1, 3, 4, 5, 6]
+
+Pivot:
+
+pivot = 6
+
+Now j scans:
+
+2 <= 6 → move to left
+1 <= 6 → move to left
+3 <= 6 → move to left
+4 <= 6 → move to left
+5 <= 6 → move to left
+
+Finally, pivot 6 is placed at its correct position:
+
+[2, 1, 3, 4, 5, 6]
+                  ↑
+                pivot
+
+Then partition() returns the pivot index.
+
+4. Explain why idx++ and swap
+
+This is probably the part the interviewer may ask about.
+
+Say:
+
+"idx separates the elements that are already smaller than or equal to the pivot from the elements that haven't been processed yet."
+
+Think:
+
+[ smaller elements | unprocessed elements | pivot ]
+                    ↑
+                   idx
+
+Whenever arr[j] <= pivot:
+
+idx++;
+swap(arr[j], arr[idx]);
+
+we move that element into the smaller-elements section.
+
+5. Explain the pivot swap
+
+At the end:
+
+idx++;
+swap(arr[end], arr[idx]);
+
+Say:
+
+"After scanning all elements, idx points to the position where the pivot should go. So I swap the pivot with arr[idx]. Now the pivot is in its correct position."
+
+This is the key property:
+
+LEFT SIDE       PIVOT       RIGHT SIDE
+≤ pivot                    > pivot
+6. Explain quickSort()
+
+Your code:
+
+void quickSort(vector<int>& arr, int st, int end) {
+
+
+    if (st < end) {
+
+
+        int pivIdx = partition(arr, st, end);
+
+
+        quickSort(arr, st, pivIdx - 1);
+
+
+        quickSort(arr, pivIdx + 1, end);
+    }
+}
+
+Say:
+
+"After partitioning, I get the pivot's correct position. Then I recursively sort the elements to the left of the pivot and the elements to the right of the pivot."
+
+These two lines:
+
+quickSort(arr, st, pivIdx - 1);
+quickSort(arr, pivIdx + 1, end);
+
+mean:
+
+             Pivot
+               ↓
+[ left part ] [P] [ right part ]
+      ↓                ↓
+   recursion         recursion
+
+And the base condition:
+
+if(st < end)
+
+means:
+
+"If there is only one element or no element, the part is already sorted, so recursion stops."
+
+7. Complexity
+
+Finish with:
+
+"The average time complexity is O(n log n), because the array is generally divided into balanced parts. The worst case is O(n²), 
+which can happen when the pivot repeatedly becomes the smallest or largest element.
+The space complexity is O(log n) on average because of the recursion stack, and O(n) in the worst case."
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+2-----#include <iostream>
+#include <vector>
+using namespace std;
+
+void merge(vector<int>& arr, int st, int mid, int end) {
+
+    vector<int> temp;
+
+    int i = st;
+    int j = mid + 1;
+
+    // Compare elements of both halves
+    while (i <= mid && j <= end) {
+
+        if (arr[i] <= arr[j]) {
+            temp.push_back(arr[i]);
+            i++;
+        }
+        else {
+            temp.push_back(arr[j]);
+            j++;
+        }
+    }
+
+    // Remaining elements of left half
+    while (i <= mid) {
+        temp.push_back(arr[i]);
+        i++;
+    }
+
+    // Remaining elements of right half
+    while (j <= end) {
+        temp.push_back(arr[j]);
+        j++;
+    }
+
+    // Copy sorted elements back to original array
+    for (int idx = 0; idx < temp.size(); idx++) {
+        arr[st + idx] = temp[idx];
+    }
+}
+
+void mergeSort(vector<int>& arr, int st, int end) {
+
+    // Base case
+    if (st < end) {
+
+        int mid = st + (end - st) / 2;
+
+        // Sort left half
+        mergeSort(arr, st, mid);
+
+        // Sort right half
+        mergeSort(arr, mid + 1, end);
+
+        // Merge both sorted halves
+        merge(arr, st, mid, end);
+    }
+}
+
+int main() {
+
+    vector<int> arr = {12, 31, 35, 8, 32, 17};
+
+    mergeSort(arr, 0, arr.size() - 1);
+
+    for (int val : arr) {
+        cout << val << " ";
+    }
+
+    return 0;
+}
+r your Infosys interview, explain Merge Sort in a simple flow. Don't explain every line first. Start with the idea, then explain the two functions.
+
+1. Start with the basic idea
+
+Say:
+
+"Merge Sort is a Divide and Conquer sorting algorithm. It divides the array into two halves repeatedly until each part contains only one element. Then it merges those parts in sorted order."
+
+Then say:
+
+"So the main steps are Divide, Recursively Sort, and Merge."
+
+Divide → Sort → Merge
+2. Explain mergeSort()
+
+Show this part:
+
+if (st < end) {
+    int mid = st + (end - st) / 2;
+
+
+    mergeSort(arr, st, mid);
+    mergeSort(arr, mid + 1, end);
+
+
+    merge(arr, st, mid, end);
+}
+
+Say:
+
+"First, I check st < end. If it is false, there is only one element, so I stop the recursion."
+
+Then:
+
+"I calculate the middle index and divide the array into a left half and a right half."
+
+Then explain the two recursive calls:
+
+"The first recursive call processes the left half. Once the left side is completely divided and processed, the second recursive call processes the right half."
+
+Then:
+
+"After both halves are sorted, I call the merge function to combine them."
+
+Important flow
+[12 31 35 8 32 17]
+          ↓
+       Divide
+       /     \
+ [12 31 35] [8 32 17]
+     ↓           ↓
+ recursion    recursion
+     ↓           ↓
+ [12][31][35] [8][32][17]
+       \         /
+          Merge
+            ↓
+ [8 12 17 31 32 35]
+3. Explain merge()
+
+Start with:
+
+vector<int> temp;
+
+
+int i = st;
+int j = mid + 1;
+
+Say:
+
+"Now I have two sorted halves. I use two pointers: i points to the left half and j points to the right half. I use a temporary array to store the sorted result."
+
+Then:
+
+while (i <= mid && j <= end) {
+    if (arr[i] <= arr[j]) {
+        temp.push_back(arr[i]);
+        i++;
+    }
+    else {
+        temp.push_back(arr[j]);
+        j++;
+    }
+}
+
+Say:
+
+"I compare the elements pointed to by i and j. Whichever is smaller, I put it into the temporary array and move that pointer forward."
+
+For example:
+
+Left:  [12, 31, 35]
+        ↑
+
+
+Right: [8, 17, 32]
+        ↑
+
+Compare:
+
+12 vs 8 → take 8
+12 vs 17 → take 12
+31 vs 17 → take 17
+31 vs 32 → take 31
+35 vs 32 → take 32
+
+Result:
+
+[8, 12, 17, 31, 32]
+
+Then 35 is remaining, so we copy it.
+
+4. Explain remaining elements
+while (i <= mid) {
+    temp.push_back(arr[i]);
+    i++;
+}
+
+
+while (j <= end) {
+    temp.push_back(arr[j]);
+    j++;
+}
+
+Say:
+
+"If one half finishes before the other, I copy all remaining elements from the other half because that half is already sorted."
+
+5. Explain copying back
+for (int idx = 0; idx < temp.size(); idx++) {
+    arr[st + idx] = temp[idx];
+}
+
+Say:
+
+"Finally, I copy the sorted elements from the temporary array back into the original array."
+
+6. Complexity
+
+Finish with:
+
+"The time complexity is O(n log n). We divide the array into log n levels, and at each level merging takes O(n). The space complexity is O(n) because we use a temporary array."
+
+🔥 Full answer to memorize
+
+If the interviewer says "Explain your Merge Sort code", say:
+
+"Merge Sort is a Divide and Conquer algorithm. First, I divide the array into two halves recursively until each part contains one element. Then I merge the two sorted halves. During merging, I use two pointers, one for each half, and compare their elements. I put the smaller element into a temporary array and move that pointer forward. If one half finishes, I copy the remaining elements from the other half. Finally, I copy the temporary array back to the original array. The time complexity is O(n log n) and the space complexity is O(n)."
+
+🧠 One-line memory trick
+
+mergeSort() = Divide
+
+merge() = Compare + Combine
+
+Overall:
+
+Divide → Left recursion → Right recursion → Merge
+
+That's the explanation I'd recommend giving in your Infosys interview—simple, clear, and enough to show that you actually understand the code rather than memorized it.
